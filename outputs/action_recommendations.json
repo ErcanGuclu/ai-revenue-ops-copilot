@@ -1,0 +1,61 @@
+{
+    "recommendation_count": 4,
+    "recommendations": [
+        {
+            "recommendation_id": "REC-001",
+            "priority": "High",
+            "business_area": "Lead Generation",
+            "issue": "New lead achievement rate is low: 38.89%",
+            "recommended_action": "Review campaign performance and prioritize channels with higher lead quality.",
+            "owner_team": "Marketing",
+            "time_horizon": "This week",
+            "source": {
+                "source_file": "anomaly_report.json",
+                "source_category": "Lead Generation",
+                "source_severity": "High"
+            }
+        },
+        {
+            "recommendation_id": "REC-002",
+            "priority": "Medium",
+            "business_area": "Pipeline Value",
+            "issue": "Pipeline value achievement rate is below expected level: 60.00%",
+            "recommended_action": "Increase qualified opportunity generation and review open deal progression.",
+            "owner_team": "Sales",
+            "time_horizon": "Next 2 weeks",
+            "source": {
+                "source_file": "anomaly_report.json",
+                "source_category": "Pipeline Value",
+                "source_severity": "Medium"
+            }
+        },
+        {
+            "recommendation_id": "REC-003",
+            "priority": "Medium",
+            "business_area": "Lost Deals",
+            "issue": "Lost deal value is notable: 30000.00",
+            "recommended_action": "Review lost reasons and identify repeating objections or qualification issues.",
+            "owner_team": "Sales Management",
+            "time_horizon": "Next 2 weeks",
+            "source": {
+                "source_file": "anomaly_report.json",
+                "source_category": "Lost Deals",
+                "source_severity": "Medium"
+            }
+        },
+        {
+            "recommendation_id": "REC-004",
+            "priority": "Low",
+            "business_area": "Marketing Lead Quality",
+            "issue": "Lead source has low average lead score: Cold Email - 42.00",
+            "recommended_action": "Review campaign targeting, messaging, and lead qualification rules for this source.",
+            "owner_team": "Marketing",
+            "time_horizon": "This month",
+            "source": {
+                "source_file": "anomaly_report.json",
+                "source_category": "Marketing Lead Quality",
+                "source_severity": "Low"
+            }
+        }
+    ]
+}

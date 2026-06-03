@@ -1,0 +1,29 @@
+{
+    "anomaly_count": 4,
+    "anomalies": [
+        {
+            "category": "Lead Generation",
+            "severity": "High",
+            "message": "New lead achievement rate is low: 38.89%",
+            "recommendation": "Review campaign performance and prioritize channels with higher lead quality."
+        },
+        {
+            "category": "Pipeline Value",
+            "severity": "Medium",
+            "message": "Pipeline value achievement rate is below expected level: 60.00%",
+            "recommendation": "Increase qualified opportunity generation and review open deal progression."
+        },
+        {
+            "category": "Lost Deals",
+            "severity": "Medium",
+            "message": "Lost deal value is notable: 30000.00",
+            "recommendation": "Review lost reasons and identify repeating objections or qualification issues."
+        },
+        {
+            "category": "Marketing Lead Quality",
+            "severity": "Low",
+            "message": "Lead source has low average lead score: Cold Email - 42.00",
+            "recommendation": "Review campaign targeting, messaging, and lead qualification rules for this source."
+        }
+    ]
+}

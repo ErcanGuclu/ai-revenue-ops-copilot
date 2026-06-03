@@ -1,0 +1,79 @@
+{
+    "sales_kpis": {
+        "total_pipeline_value": 150000.0,
+        "open_deal_count": 3,
+        "won_revenue": 120000.0,
+        "lost_deal_value": 30000.0,
+        "weighted_pipeline": 89500.0,
+        "average_deal_value": 60000.0
+    },
+    "marketing_kpis": {
+        "total_leads": 7,
+        "converted_lead_count": 5,
+        "lead_to_deal_conversion_rate": 71.42857142857143,
+        "average_lead_score": 70.0,
+        "total_estimated_lead_value": 360000.0,
+        "lead_source_summary": [
+            {
+                "lead_source": "Cold Email",
+                "lead_count": 1,
+                "average_lead_score": 42.0,
+                "estimated_value": 30000
+            },
+            {
+                "lead_source": "Google Ads",
+                "lead_count": 2,
+                "average_lead_score": 61.5,
+                "estimated_value": 45000
+            },
+            {
+                "lead_source": "LinkedIn",
+                "lead_count": 2,
+                "average_lead_score": 78.5,
+                "estimated_value": 85000
+            },
+            {
+                "lead_source": "Referral",
+                "lead_count": 1,
+                "average_lead_score": 78.0,
+                "estimated_value": 80000
+            },
+            {
+                "lead_source": "Website",
+                "lead_count": 1,
+                "average_lead_score": 90.0,
+                "estimated_value": 120000
+            }
+        ]
+    },
+    "target_comparison": {
+        "target_period": {
+            "week_start": "2026-05-29",
+            "week_end": "2026-06-04"
+        },
+        "revenue": {
+            "target": 90000.0,
+            "actual": 120000.0,
+            "gap": 30000.0,
+            "achievement_rate": 133.33333333333331
+        },
+        "new_leads": {
+            "target": 18,
+            "actual": 7,
+            "gap": -11,
+            "achievement_rate": 38.88888888888889
+        },
+        "conversion_rate": {
+            "target": 35.0,
+            "actual": 71.42857142857143,
+            "gap": 36.42857142857143,
+            "achievement_rate": 204.08163265306123
+        },
+        "pipeline_value": {
+            "target": 250000.0,
+            "actual": 150000.0,
+            "gap": -100000.0,
+            "achievement_rate": 60.0
+        }
+    }
+}

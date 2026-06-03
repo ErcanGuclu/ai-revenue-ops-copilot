@@ -1,0 +1,6 @@
+deal_id,company_name,industry,lead_source,deal_stage,deal_value,probability,owner,created_date,expected_close_date,status
+D001,Atlas Teknoloji,SaaS,LinkedIn,Proposal,45000,70,Ercan,2026-05-01,2026-06-15,Open
+D002,Nova Lojistik,Logistics,Referral,Negotiation,80000,60,Ercan,2026-05-03,2026-06-20,Open
+D003,Vega Retail,E-commerce,Google Ads,Qualified,25000,40,Hande,2026-05-07,2026-06-30,Open
+D004,Orion Finans,Finance,Website,Closed Won,120000,100,Ercan,2026-04-15,2026-05-25,Won
+D005,Luna Medya,Marketing,Cold Email,Closed Lost,30000,0,Hande,2026-04-22,2026-05-30,Lost

@@ -1,0 +1,8 @@
+lead_id,lead_source,campaign_name,lead_date,company_name,industry,lead_score,converted_to_deal,deal_id,estimated_value
+L001,LinkedIn,B2B AI Automation Campaign,2026-05-01,Atlas Teknoloji,SaaS,85,Yes,D001,45000
+L002,Referral,Partner Network,2026-05-03,Nova Lojistik,Logistics,78,Yes,D002,80000
+L003,Google Ads,AI Reporting Landing Page,2026-05-07,Vega Retail,E-commerce,65,Yes,D003,25000
+L004,Website,Organic Demo Request,2026-05-10,Orion Finans,Finance,90,Yes,D004,120000
+L005,Cold Email,Outbound RevOps Sequence,2026-05-12,Luna Medya,Marketing,42,Yes,D005,30000
+L006,LinkedIn,B2B AI Automation Campaign,2026-05-15,Delta Yazılım,SaaS,72,No,,40000
+L007,Google Ads,AI Reporting Landing Page,2026-05-18,Mira Danışmanlık,Consulting,58,No,,20000
