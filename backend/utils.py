@@ -1,12 +1,8 @@
-from pathlib import Path
 import json
 
 import pandas as pd
 
-
-BASE_DIR = Path(__file__).resolve().parents[1]
-DATA_DIR = BASE_DIR / "data"
-OUTPUT_DIR = BASE_DIR / "outputs"
+from config import DATA_DIR, OUTPUT_DIR
 
 
 def load_csv(file_name: str) -> pd.DataFrame:

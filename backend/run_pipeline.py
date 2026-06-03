@@ -1,9 +1,9 @@
-from pathlib import Path
 import subprocess
 import sys
 
+from config import BASE_DIR
 
-BASE_DIR = Path(__file__).resolve().parents[1]
+
 BACKEND_DIR = BASE_DIR / "backend"
 
 
