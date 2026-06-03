@@ -1,21 +1,6 @@
-from pathlib import Path
-import json
 
+from utils import load_json, save_json
 
-BASE_DIR = Path(__file__).resolve().parents[1]
-OUTPUT_DIR = BASE_DIR / "outputs"
-
-
-def load_json(file_name: str) -> dict:
-    file_path = OUTPUT_DIR / file_name
-
-    if not file_path.exists():
-        raise FileNotFoundError(
-            f"{file_name} bulunamadı. Önce ilgili pipeline adımları çalıştırılmalı."
-        )
-
-    with file_path.open("r", encoding="utf-8") as file:
-        return json.load(file)
 
 
 def map_severity_to_priority(severity: str) -> str:
@@ -98,13 +83,7 @@ def generate_action_recommendations(anomaly_report: dict) -> dict:
 
 
 def save_action_recommendations(action_recommendations: dict) -> None:
-    OUTPUT_DIR.mkdir(exist_ok=True)
-
-    output_path = OUTPUT_DIR / "action_recommendations.json"
-
-    with output_path.open("w", encoding="utf-8") as file:
-        json.dump(action_recommendations, file, indent=4, ensure_ascii=False)
-
+    output_path = save_json("action_recommendations.json", action_recommendations)
     print(f"Aksiyon önerileri oluşturuldu: {output_path}")
 
 

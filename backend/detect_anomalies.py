@@ -1,33 +1,6 @@
-from pathlib import Path
-import json
-
 import pandas as pd
 
-
-BASE_DIR = Path(__file__).resolve().parents[1]
-DATA_DIR = BASE_DIR / "data"
-OUTPUT_DIR = BASE_DIR / "outputs"
-
-
-def load_csv(file_name: str) -> pd.DataFrame:
-    file_path = DATA_DIR / file_name
-
-    if not file_path.exists():
-        raise FileNotFoundError(f"Dosya bulunamadı: {file_path}")
-
-    return pd.read_csv(file_path)
-
-
-def load_kpi_summary() -> dict:
-    file_path = OUTPUT_DIR / "kpi_summary.json"
-
-    if not file_path.exists():
-        raise FileNotFoundError(
-            "kpi_summary.json bulunamadı. Önce backend/calculate_kpis.py çalıştırılmalı."
-        )
-
-    with file_path.open("r", encoding="utf-8") as file:
-        return json.load(file)
+from utils import load_csv, load_json, save_json
 
 
 def add_anomaly(anomalies: list[dict], category: str, severity: str, message: str, recommendation: str) -> None:
@@ -168,21 +141,12 @@ def detect_marketing_anomalies(marketing_leads: pd.DataFrame) -> list[dict]:
 
 
 def save_anomalies(anomalies: list[dict]) -> None:
-    OUTPUT_DIR.mkdir(exist_ok=True)
+    output_data = {
+        "anomaly_count": len(anomalies),
+        "anomalies": anomalies,
+    }
 
-    output_path = OUTPUT_DIR / "anomaly_report.json"
-
-    with output_path.open("w", encoding="utf-8") as file:
-        json.dump(
-            {
-                "anomaly_count": len(anomalies),
-                "anomalies": anomalies,
-            },
-            file,
-            indent=4,
-            ensure_ascii=False,
-        )
-
+    output_path = save_json("anomaly_report.json", output_data)
     print(f"Anomali raporu oluşturuldu: {output_path}")
 
 
@@ -207,7 +171,7 @@ def print_anomalies(anomalies: list[dict]) -> None:
 def main() -> None:
     sales_pipeline = load_csv("sales_pipeline.csv")
     marketing_leads = load_csv("marketing_leads.csv")
-    kpi_summary = load_kpi_summary()
+    kpi_summary = load_json("kpi_summary.json")
 
     anomalies = []
 

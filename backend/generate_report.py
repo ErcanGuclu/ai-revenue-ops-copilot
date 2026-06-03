@@ -1,22 +1,7 @@
-from pathlib import Path
-import json
+
 from datetime import datetime
 
-
-BASE_DIR = Path(__file__).resolve().parents[1]
-OUTPUT_DIR = BASE_DIR / "outputs"
-
-
-def load_json(file_name: str) -> dict:
-    file_path = OUTPUT_DIR / file_name
-
-    if not file_path.exists():
-        raise FileNotFoundError(
-            f"{file_name} bulunamadı. Önce KPI ve anomali scriptlerini çalıştırmalısın."
-        )
-
-    with file_path.open("r", encoding="utf-8") as file:
-        return json.load(file)
+from utils import load_json, save_text
 
 
 def format_currency(value: float) -> str:
@@ -238,13 +223,7 @@ def generate_report(kpi_summary: dict, anomaly_report: dict) -> str:
 
 
 def save_report(report: str) -> None:
-    OUTPUT_DIR.mkdir(exist_ok=True)
-
-    output_path = OUTPUT_DIR / "weekly_revenue_report.md"
-
-    with output_path.open("w", encoding="utf-8") as file:
-        file.write(report)
-
+    output_path = save_text("weekly_revenue_report.md", report)
     print(f"Yönetici raporu oluşturuldu: {output_path}")
 
 

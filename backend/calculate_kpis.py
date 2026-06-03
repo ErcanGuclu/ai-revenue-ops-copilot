@@ -1,21 +1,6 @@
-from pathlib import Path
-import json
-
 import pandas as pd
 
-
-BASE_DIR = Path(__file__).resolve().parents[1]
-DATA_DIR = BASE_DIR / "data"
-OUTPUT_DIR = BASE_DIR / "outputs"
-
-
-def load_csv(file_name: str) -> pd.DataFrame:
-    file_path = DATA_DIR / file_name
-
-    if not file_path.exists():
-        raise FileNotFoundError(f"Dosya bulunamadı: {file_path}")
-
-    return pd.read_csv(file_path)
+from utils import load_csv, save_json
 
 
 def calculate_sales_kpis(sales_pipeline: pd.DataFrame) -> dict:
@@ -142,13 +127,7 @@ def calculate_target_comparison(
 
 
 def save_kpis_to_json(kpi_summary: dict) -> None:
-    OUTPUT_DIR.mkdir(exist_ok=True)
-
-    output_path = OUTPUT_DIR / "kpi_summary.json"
-
-    with output_path.open("w", encoding="utf-8") as file:
-        json.dump(kpi_summary, file, indent=4, ensure_ascii=False)
-
+    output_path = save_json("kpi_summary.json", kpi_summary)
     print(f"KPI özeti oluşturuldu: {output_path}")
 
 
