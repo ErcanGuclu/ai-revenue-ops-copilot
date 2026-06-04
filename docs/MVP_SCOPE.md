@@ -31,6 +31,10 @@ Revenue Operations Manager, Sales Operations Manager, Growth Manager veya küç�
 - Markdown report output
 - JSON KPI output
 - Structured action recommendation generation
+- Centralized configuration management
+- Shared utility functions for file operations
+- Configurable anomaly thresholds
+
 
 ## Out of Scope
 
@@ -58,3 +62,21 @@ Internal pipeline artifact:
 ## Success Criteria
 
 The MVP is successful if it can read sample CSV files, validate business data, calculate key business metrics, detect simple anomalies, generate structured action recommendations, and produce a clear weekly executive report with actionable recommendations.
+
+## Technical Design Notes
+
+The MVP uses a modular backend structure.
+
+| Module | Role |
+|---|---|
+| backend/config.py | Central configuration for paths, file names, and anomaly thresholds. |
+| backend/utils.py | Shared CSV, JSON, and text file utilities. |
+| backend/validate_data.py | Data validation layer. |
+| backend/calculate_kpis.py | KPI calculation layer. |
+| backend/detect_anomalies.py | Rule-based anomaly detection layer. |
+| backend/generate_action_recommendations.py | Structured action recommendation layer. |
+| backend/generate_report.py | Markdown executive report generation layer. |
+| backend/run_pipeline.py | Single-command pipeline runner. |
+
+This structure separates configuration, utilities, business logic, and pipeline orchestration.
+

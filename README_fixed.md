@@ -55,6 +55,40 @@ The current pipeline performs the following steps:
 5. Structured action recommendation generation
 6. Markdown executive report generation
 
+## Technical Architecture
+
+The backend is organized into small, focused Python modules.
+
+| Module | Responsibility |
+|---|---|
+| backend/config.py | Stores project paths, input/output file names, and anomaly thresholds. |
+| backend/utils.py | Provides shared file loading and saving utilities. |
+| backend/validate_data.py | Validates CSV schemas, required fields, numeric ranges, dates, and relationships. |
+| backend/calculate_kpis.py | Calculates sales, marketing, and target comparison KPIs. |
+| backend/detect_anomalies.py | Detects rule-based business anomalies using configurable thresholds. |
+| backend/generate_action_recommendations.py | Converts anomalies into structured business action recommendations. |
+| backend/generate_report.py | Generates the Markdown executive report. |
+| backend/run_pipeline.py | Runs the full pipeline in the correct order. |
+
+
+## Configuration
+
+Project-level settings are managed in:
+
+- backend/config.py
+
+The configuration file currently includes:
+
+- BASE_DIR
+- DATA_DIR
+- OUTPUT_DIR
+- INPUT_FILES
+- OUTPUT_FILES
+- ANOMALY_THRESHOLDS
+
+Anomaly detection thresholds are not hardcoded inside the analysis logic. They are centralized in `ANOMALY_THRESHOLDS`, which makes the rule engine easier to maintain and extend.
+
+
 ## Features
 
 - CSV data loading
@@ -70,6 +104,10 @@ The current pipeline performs the following steps:
 - Executive Markdown report generation
 - Single-command pipeline runner
 - Structured action recommendation generation
+- Centralized project configuration
+- Shared file utility functions
+- Configurable anomaly thresholds
+
 
 ## Calculated KPIs
 
@@ -110,6 +148,8 @@ The MVP currently detects:
 - Low-quality lead sources
 - Notable lost deal value
 
+Anomaly thresholds are managed centrally in `backend/config.py` through the `ANOMALY_THRESHOLDS` dictionary.
+
 ## Action Recommendations
 
 The MVP generates structured business action recommendations based on detected anomalies.
@@ -137,13 +177,15 @@ This allows the system to move beyond reporting and support decision-oriented bu
 ai-revenue-ops-copilot/
 │
 ├── backend/
+│   ├── config.py
+│   ├── utils.py
 │   ├── check_data.py
 │   ├── validate_data.py
 │   ├── calculate_kpis.py
 │   ├── detect_anomalies.py
+│   ├── generate_action_recommendations.py
 │   ├── generate_report.py
-│   ├── run_pipeline.py
-│   └── generate_action_recommendations.py
+│   └── run_pipeline.py
 │
 ├── data/
 │   ├── sales_pipeline.csv
