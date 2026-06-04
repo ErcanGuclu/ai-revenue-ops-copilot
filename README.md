@@ -367,3 +367,9 @@ It shows the ability to:
 - maintain the project with Git and clear documentation.
 
 Future versions can extend this MVP with FastAPI, LLM-generated summaries, RAG-based business context, agentic workflow orchestration, and dashboard interfaces.
+
+## Interview Summary
+
+This project demonstrates an end-to-end business data workflow: CSV data ingestion, validation, KPI calculation, anomaly detection, structured action recommendation generation, and executive Markdown reporting.
+
+The current MVP intentionally focuses on a deterministic and explainable analytics pipeline before adding LLM, RAG, API, or agentic workflow layers.
