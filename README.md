@@ -1,5 +1,9 @@
 # AI Revenue Operations & Reporting Copilot
 
+## One-Line Value Proposition
+
+A portfolio-grade Python MVP that turns sales and marketing CSV data into KPI summaries, anomaly insights, structured action recommendations, and an executive Markdown report.
+
 ## Project Overview
 
 AI Revenue Operations & Reporting Copilot is a Python-based analytics and reporting pipeline that transforms sales and marketing CSV data into actionable executive reports.
@@ -19,6 +23,20 @@ This creates several operational problems:
 - Repetitive weekly analysis work
 
 This MVP addresses the problem by reading structured business data, calculating KPIs, detecting anomalies, and generating an executive Markdown report.
+
+## Why This Project Matters
+
+This project demonstrates how a business reporting workflow can be transformed into a repeatable data pipeline.
+
+Instead of manually preparing weekly revenue operations reports, the system automatically:
+
+- validates business data,
+- calculates sales and marketing KPIs,
+- detects risk signals,
+- generates structured action recommendations,
+- produces an executive-ready Markdown report.
+
+The MVP is intentionally small, but it is designed around a real B2B workflow pattern: turning operational data into decision-support outputs.
 
 ## MVP Scope
 
@@ -264,9 +282,29 @@ The main business-facing output is:
 
 - outputs/weekly_revenue_report.md
 
+
+## Demo Outputs
+
+The repository includes generated sample outputs under the `outputs/` folder.
+
+Official MVP outputs:
+
+- `outputs/kpi_summary.json`
+- `outputs/action_recommendations.json`
+- `outputs/weekly_revenue_report.md`
+
+Internal pipeline artifact:
+
+- `outputs/anomaly_report.json`
+
+The main business-facing artifact is:
+
+- `outputs/weekly_revenue_report.md`
+
+
 ## Current Status
 
-MVP v0.1 is in progress.
+MVP v0.1 is functional.
 
 Completed:
 
@@ -274,9 +312,17 @@ Completed:
 - CSV data loading
 - Data validation layer
 - KPI calculation layer
-- Basic anomaly detection layer
-- Markdown report generation
+- Rule-based anomaly detection layer
+- Structured action recommendation generation
+- Markdown executive report generation
 - Single-command pipeline runner
+- Centralized configuration module
+- Shared utility module
+- Configurable anomaly thresholds
+- Initial automated tests
+- Pipeline smoke test
+- GitHub-ready documentation
+
 
 ## Next Development Steps
 
@@ -289,6 +335,7 @@ Planned next steps:
 - Add RAG/document intelligence layer for business context
 - Add agentic workflow orchestration
 - Add CRM/API integration mock layer
+
 
 ## Strategic Positioning
 
@@ -303,3 +350,20 @@ It supports the following skill areas:
 - Decision support systems
 - API/backend-oriented AI application development
 - Portfolio-grade business problem solving
+
+
+## Portfolio Relevance
+
+This project is designed to demonstrate practical applied AI engineering skills beyond a basic chatbot or notebook demo.
+
+It shows the ability to:
+
+- structure a real business workflow,
+- build a repeatable Python data pipeline,
+- separate configuration, utilities, business logic, and orchestration,
+- generate machine-readable JSON outputs,
+- generate human-readable executive reports,
+- create tests for configuration and pipeline behavior,
+- maintain the project with Git and clear documentation.
+
+Future versions can extend this MVP with FastAPI, LLM-generated summaries, RAG-based business context, agentic workflow orchestration, and dashboard interfaces.
