@@ -1,5 +1,6 @@
 import pandas as pd
 
+from config import ANOMALY_THRESHOLDS
 from utils import load_csv, load_json, save_json
 
 
@@ -23,7 +24,7 @@ def detect_target_anomalies(kpi_summary: dict) -> list[dict]:
     conversion_rate = target_comparison["conversion_rate"]
     pipeline_value = target_comparison["pipeline_value"]
 
-    if revenue["achievement_rate"] < 70:
+    if revenue["achievement_rate"] < ANOMALY_THRESHOLDS["revenue_achievement_rate_high_risk"]:
         add_anomaly(
             anomalies,
             category="Revenue",
@@ -32,7 +33,7 @@ def detect_target_anomalies(kpi_summary: dict) -> list[dict]:
             recommendation="Review stalled opportunities, accelerate high-probability deals, and check whether closed-won revenue is underreported.",
         )
 
-    if new_leads["achievement_rate"] < 70:
+    if new_leads["achievement_rate"] < ANOMALY_THRESHOLDS["new_leads_achievement_rate_high_risk"]:
         add_anomaly(
             anomalies,
             category="Lead Generation",
@@ -53,7 +54,7 @@ def detect_target_anomalies(kpi_summary: dict) -> list[dict]:
             recommendation="Analyze lead qualification criteria and review sales follow-up timing.",
         )
 
-    if pipeline_value["achievement_rate"] < 80:
+    if pipeline_value["achievement_rate"] < ANOMALY_THRESHOLDS["pipeline_value_achievement_rate_medium_risk"]:
         add_anomaly(
             anomalies,
             category="Pipeline Value",
@@ -73,8 +74,14 @@ def detect_sales_anomalies(sales_pipeline: pd.DataFrame) -> list[dict]:
 
     high_value_low_probability = sales_pipeline[
         (sales_pipeline["status"].str.lower() == "open")
-        & (sales_pipeline["deal_value"] >= 50000)
-        & (sales_pipeline["probability"] < 50)
+        & (
+            sales_pipeline["deal_value"]
+            >= ANOMALY_THRESHOLDS["high_value_deal_threshold"]
+        )
+        & (
+            sales_pipeline["probability"]
+            < ANOMALY_THRESHOLDS["low_probability_threshold"]
+        )
     ]
 
     for _, row in high_value_low_probability.iterrows():
@@ -93,7 +100,7 @@ def detect_sales_anomalies(sales_pipeline: pd.DataFrame) -> list[dict]:
     lost_deals = sales_pipeline[sales_pipeline["status"].str.lower() == "lost"]
     lost_value = lost_deals["deal_value"].sum()
 
-    if lost_value >= 30000:
+    if lost_value >= ANOMALY_THRESHOLDS["notable_lost_deal_value_threshold"]:
         add_anomaly(
             anomalies,
             category="Lost Deals",
@@ -121,8 +128,11 @@ def detect_marketing_anomalies(marketing_leads: pd.DataFrame) -> list[dict]:
     )
 
     low_quality_sources = lead_source_summary[
-        (lead_source_summary["lead_count"] >= 1)
-        & (lead_source_summary["average_lead_score"] < 60)
+    (lead_source_summary["lead_count"] >= 1)
+    & (
+        lead_source_summary["average_lead_score"]
+        < ANOMALY_THRESHOLDS["low_quality_lead_score_threshold"]
+    )
     ]
 
     for _, row in low_quality_sources.iterrows():
