@@ -202,6 +202,9 @@ ai-revenue-ops-copilot/
 │   └── anomaly_report.json  # Internal pipeline artifact
 │
 ├── tests/
+│   ├── test_config.py
+│   └── test_pipeline_outputs.py
+│
 ├── workflows/
 ├── notebooks/
 ├── frontend/
