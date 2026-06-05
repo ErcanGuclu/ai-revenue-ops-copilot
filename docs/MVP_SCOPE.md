@@ -34,7 +34,9 @@ Revenue Operations Manager, Sales Operations Manager, Growth Manager veya küç�
 - Centralized configuration management
 - Shared utility functions for file operations
 - Configurable anomaly thresholds
-
+- Provider-based LLM access layer
+- Optional LLM executive summary generation
+- `--with-llm` pipeline flag
 
 ## Out of Scope
 
@@ -51,17 +53,23 @@ Revenue Operations Manager, Sales Operations Manager, Growth Manager veya küç�
 
 Official MVP outputs:
 
-- weekly_revenue_report.md
-- kpi_summary.json
-- action_recommendations.json
+- `weekly_revenue_report.md`
+- `kpi_summary.json`
+- `action_recommendations.json`
 
 Internal pipeline artifact:
 
-- anomaly_report.json
+- `anomaly_report.json`
+
+Optional LLM output:
+
+- `llm_executive_summary.md`
+
 
 ## Success Criteria
 
-The MVP is successful if it can read sample CSV files, validate business data, calculate key business metrics, detect simple anomalies, generate structured action recommendations, and produce a clear weekly executive report with actionable recommendations.
+The MVP is successful if it can read sample CSV files, validate business data, calculate key business metrics, detect simple anomalies, generate structured action recommendations, produce a clear weekly executive report, and optionally generate an LLM-powered executive summary from structured pipeline outputs.
+
 
 ## Technical Design Notes
 
@@ -77,6 +85,24 @@ The MVP uses a modular backend structure.
 | backend/generate_action_recommendations.py | Structured action recommendation layer. |
 | backend/generate_report.py | Markdown executive report generation layer. |
 | backend/run_pipeline.py | Single-command pipeline runner. |
+| `backend/llm_provider.py` | Provider-based LLM access layer. |
+| `backend/generate_llm_summary.py` | Optional LLM executive summary generation layer. |
 
 This structure separates configuration, utilities, business logic, and pipeline orchestration.
 
+
+## LLM Enrichment Scope
+
+The LLM layer is optional and does not replace the deterministic core pipeline.
+
+The LLM receives structured outputs from:
+
+- `kpi_summary.json`
+- `anomaly_report.json`
+- `action_recommendations.json`
+
+It generates:
+
+- `llm_executive_summary.md`
+
+The LLM does not perform raw KPI calculations. It only summarizes and explains already-processed business outputs.

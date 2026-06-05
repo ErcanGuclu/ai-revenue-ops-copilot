@@ -50,11 +50,21 @@ It does not include real CRM, advertising platform, or SaaS integrations yet.
 - `data/marketing_leads.csv`
 - `data/weekly_targets.csv`
 
-### Output Files
+### Official MVP Output Files
 
 - `outputs/kpi_summary.json`
-- `outputs/anomaly_report.json`
+- `outputs/action_recommendations.json`
 - `outputs/weekly_revenue_report.md`
+
+
+### Optional LLM Output
+
+- `outputs/llm_executive_summary.md`
+
+This output is generated only when the pipeline is executed with:
+
+`python backend/run_pipeline.py --with-llm`
+
 
 ### Internal Pipeline Output
 
@@ -64,7 +74,15 @@ This file is an internal analysis artifact used for anomaly detection and action
 
 ## Current Pipeline
 
-The current pipeline performs the following steps:
+The project has two execution modes.
+
+### Core Deterministic Pipeline
+
+Run:
+
+`python backend/run_pipeline.py`
+
+This mode performs:
 
 1. CSV data loading
 2. Data validation
@@ -72,6 +90,18 @@ The current pipeline performs the following steps:
 4. Anomaly detection
 5. Structured action recommendation generation
 6. Markdown executive report generation
+
+### Optional LLM Enrichment Pipeline
+
+Run:
+
+`python backend/run_pipeline.py --with-llm`
+
+This mode performs all core pipeline steps and then generates:
+
+- `outputs/llm_executive_summary.md`
+
+The LLM enrichment layer is optional. The core pipeline does not depend on API access, internet connectivity, or model availability.
 
 ## Technical Architecture
 
@@ -87,6 +117,8 @@ The backend is organized into small, focused Python modules.
 | backend/generate_action_recommendations.py | Converts anomalies into structured business action recommendations. |
 | backend/generate_report.py | Generates the Markdown executive report. |
 | backend/run_pipeline.py | Runs the full pipeline in the correct order. |
+| `backend/llm_provider.py` | Provides a centralized provider-based LLM access layer. |
+| `backend/generate_llm_summary.py` | Generates an optional LLM-powered executive summary from structured JSON outputs. |
 
 
 ## Configuration
@@ -105,6 +137,22 @@ The configuration file currently includes:
 - ANOMALY_THRESHOLDS
 
 Anomaly detection thresholds are not hardcoded inside the analysis logic. They are centralized in `ANOMALY_THRESHOLDS`, which makes the rule engine easier to maintain and extend.
+
+### LLM Configuration
+
+LLM settings are managed through `.env` and `backend/config.py`.
+
+The repository includes `.env.example` as a safe template.
+
+Example:
+
+- `LLM_PROVIDER=gemini`
+- `GEMINI_API_KEY=your_gemini_api_key_here`
+- `GEMINI_MODEL=gemini-2.5-flash-lite`
+
+The real `.env` file is excluded from Git through `.gitignore`.
+
+The first active provider is Google Gemini. OpenAI can be added later as an alternative provider.
 
 
 ## Features
@@ -125,6 +173,11 @@ Anomaly detection thresholds are not hardcoded inside the analysis logic. They a
 - Centralized project configuration
 - Shared file utility functions
 - Configurable anomaly thresholds
+- Provider-based LLM access layer
+- Google Gemini integration
+- Optional LLM executive summary generation
+- `--with-llm` pipeline flag
+- Separation between deterministic core pipeline and optional LLM enrichment
 
 
 ## Calculated KPIs
@@ -189,6 +242,26 @@ Each recommendation includes:
 
 This allows the system to move beyond reporting and support decision-oriented business workflows.
 
+## LLM Executive Summary
+
+The project includes an optional LLM enrichment layer.
+
+When executed with:
+
+`python backend/run_pipeline.py --with-llm`
+
+the system uses structured pipeline outputs:
+
+- `outputs/kpi_summary.json`
+- `outputs/anomaly_report.json`
+- `outputs/action_recommendations.json`
+
+and generates:
+
+- `outputs/llm_executive_summary.md`
+
+The LLM does not calculate KPIs directly. It receives already validated and structured outputs from the deterministic pipeline and turns them into a business-oriented executive summary.
+
 ## Project Structure
 
 ```text
@@ -203,7 +276,9 @@ ai-revenue-ops-copilot/
 │   ├── detect_anomalies.py
 │   ├── generate_action_recommendations.py
 │   ├── generate_report.py
-│   └── run_pipeline.py
+│   ├── run_pipeline.py
+│   ├── llm_provider.py
+│   └── generate_llm_summary.py
 │
 ├── data/
 │   ├── sales_pipeline.csv
@@ -217,13 +292,15 @@ ai-revenue-ops-copilot/
 │   ├── kpi_summary.json
 │   ├── action_recommendations.json
 │   ├── weekly_revenue_report.md
-│   └── anomaly_report.json  # Internal pipeline artifact
+│   ├── anomaly_report.json  # Internal pipeline artifact
+│   └── llm_executive_summary.md
 │
 ├── tests/
 │   ├── test_config.py
 │   └── test_pipeline_outputs.py
 │
 ├── workflows/
+├── .env.example
 ├── notebooks/
 ├── frontend/
 └── README.md
@@ -250,21 +327,27 @@ Or, if using a specific Python executable:
 
 ## How to Run
 
-Run the complete pipeline from the project root folder:
+### Run Core Pipeline
 
-```powershell
-& "c:\Python314\python.exe" backend/run_pipeline.py
-```
+`python backend/run_pipeline.py`
 
-This command runs:
+This runs the deterministic pipeline without any LLM API call.
 
-This command runs:
+### Run Core Pipeline with LLM Enrichment
 
-1. Data validation
-2. KPI calculation
-3. Anomaly detection
-4. Structured action recommendation generation
-5. Markdown report generation
+`python backend/run_pipeline.py --with-llm`
+
+This runs the deterministic pipeline and then generates the optional LLM executive summary.
+
+### Environment Setup for LLM
+
+Copy `.env.example` to `.env` and add your Gemini API key:
+
+- `LLM_PROVIDER=gemini`
+- `GEMINI_API_KEY=your_actual_key`
+- `GEMINI_MODEL=gemini-2.5-flash-lite`
+
+The `.env` file must not be committed to Git.
 
 ## Expected Result
 
@@ -304,7 +387,7 @@ The main business-facing artifact is:
 
 ## Current Status
 
-MVP v0.1 is functional.
+MVP v0.2 is in progress.
 
 Completed:
 
@@ -315,12 +398,16 @@ Completed:
 - Rule-based anomaly detection layer
 - Structured action recommendation generation
 - Markdown executive report generation
-- Single-command pipeline runner
+- Single-command core pipeline runner
 - Centralized configuration module
 - Shared utility module
 - Configurable anomaly thresholds
 - Initial automated tests
 - Pipeline smoke test
+- Provider-based LLM architecture
+- Google Gemini integration
+- Optional LLM executive summary generation
+- `--with-llm` pipeline flag
 - GitHub-ready documentation
 
 
@@ -328,8 +415,9 @@ Completed:
 
 Planned next steps:
 
-- Add action recommendation output as structured JSON
-- Add LLM-generated executive summary
+- Improve LLM prompt structure
+- Add LLM output quality checks
+- Add structured LLM output mode
 - Add FastAPI backend endpoint
 - Add simple dashboard interface
 - Add RAG/document intelligence layer for business context
