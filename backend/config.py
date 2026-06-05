@@ -1,9 +1,13 @@
+import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "outputs"
+
+load_dotenv(BASE_DIR / ".env")
 
 
 INPUT_FILES = {
@@ -30,3 +34,11 @@ ANOMALY_THRESHOLDS = {
     "notable_lost_deal_value_threshold": 30_000,
     "low_quality_lead_score_threshold": 60,
 }
+
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini").lower()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.5")
