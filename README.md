@@ -299,11 +299,14 @@ ai-revenue-ops-copilot/
 │   ├── test_config.py
 │   └── test_pipeline_outputs.py
 │
-├── workflows/
-├── .env.example
-├── notebooks/
 ├── frontend/
-└── README.md
+├── notebooks/
+├── workflows/
+│
+├── .env.example
+├── .gitignore
+├── README.md
+└── requirements.txt
 ```
 
 ## Requirements
