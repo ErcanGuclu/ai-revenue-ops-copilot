@@ -8,7 +8,7 @@ BACKEND_DIR = PROJECT_ROOT / "backend"
 OUTPUT_DIR = PROJECT_ROOT / "outputs"
 
 
-def test_pipeline_runs_successfully():
+def test_core_pipeline_runs_successfully():
     pipeline_script = BACKEND_DIR / "run_pipeline.py"
 
     result = subprocess.run(
@@ -21,9 +21,10 @@ def test_pipeline_runs_successfully():
 
     assert result.returncode == 0, result.stderr
     assert "PIPELINE COMPLETED SUCCESSFULLY" in result.stdout
+    assert "Skipping optional LLM enrichment layer." in result.stdout
 
 
-def test_pipeline_generates_expected_output_files():
+def test_core_pipeline_generates_expected_output_files():
     expected_output_files = [
         "kpi_summary.json",
         "anomaly_report.json",
@@ -34,3 +35,18 @@ def test_pipeline_generates_expected_output_files():
     for file_name in expected_output_files:
         file_path = OUTPUT_DIR / file_name
         assert file_path.exists(), f"Missing output file: {file_path}"
+
+
+def test_core_pipeline_does_not_list_llm_output_by_default():
+    pipeline_script = BACKEND_DIR / "run_pipeline.py"
+
+    result = subprocess.run(
+        [sys.executable, str(pipeline_script)],
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "- outputs/llm_executive_summary.md" not in result.stdout

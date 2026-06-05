@@ -1,5 +1,5 @@
 ---
-Generated at: 2026-06-05 17:11:23
+Generated at: 2026-06-05 22:34:04
 Source files:
 - outputs/kpi_summary.json
 - outputs/anomaly_report.json
@@ -10,25 +10,25 @@ Source files:
 
 ## Executive Overview
 
-During the target period of May 29, 2026, to June 4, 2026, the business delivered strong bottom-line results, with won revenue reaching $120,000.00 against a target of $90,000.00. This represents a positive revenue gap of $30,000.00 and an achievement rate of 133.33%. This revenue performance was propelled by an exceptional lead-to-deal conversion rate of 71.43%, which dramatically exceeded the target of 35.0% (representing a 204.08% achievement rate) as 5 out of 7 total leads were successfully converted into deals.
+During the performance period from May 29, 2026, to June 4, 2026, the business demonstrated strong revenue performance. Actual won revenue reached $120,000.0, exceeding the $90,000.0 target by a surplus of $30,000.0, which represents a 133.33% achievement rate. This revenue milestone was supported by an exceptional lead-to-deal conversion rate of 71.43% (against a target of 35.0%), resulting in 5 converted leads.
 
-However, significant challenges persist in top-of-funnel generation and pipeline health. The business generated only 7 new leads against a target of 18, resulting in an achievement rate of just 38.89% and a gap of -11 leads. This shortfall directly impacted the pipeline, where total pipeline value ended at $150,000.00 (across 3 open deals) against a target of $250,000.00. This leaves a gap of -$100,000.00 and a 60.00% pipeline achievement rate. The current weighted pipeline stands at $89,500.00, with an average deal value of $60,000.00.
+However, significant challenges persist in lead acquisition and pipeline health. The business generated only 7 new leads against a target of 18, representing a gap of -11 leads and a low achievement rate of 38.89%. Due to this top-of-funnel deficit, the total pipeline value finished at $150,000.0, falling short of the $250,000.0 target by $100,000.0 (a 60.0% achievement rate) across 3 open deals, with a weighted pipeline of $89,500.0.
 
-An analysis of marketing lead sources reveals a total estimated lead value of $360,000.00, with highly polarized quality. The Website channel yielded the highest quality lead (1 lead with an average lead score of 90.0 and an estimated value of $120,000.00), followed by LinkedIn (2 leads, average score of 78.5, estimated value of $85,000.00) and Referral (1 lead, average score of 78.0, estimated value of $80,000.00). Conversely, Google Ads brought in 2 leads with a moderate average score of 61.5 ($45,000.00 estimated value), while Cold Email underperformed with 1 lead scoring 42.0 ($30,000.00 estimated value).
+Marketing channel quality remains highly variable, with an average lead score of 70.0 across an estimated total lead value of $360,000.0. Individual channel scores ranged from Website (1 lead, 90.0 average score, $120,000 estimated value) down to Cold Email (1 lead, 42.0 average score, $30,000 estimated value). Additionally, the sales cycle experienced notable revenue leakage, with $30,000.0 recorded in lost deal value.
 
 ## Key Risks
 
-* **Low Lead Generation (High Severity):** The new lead achievement rate is critically low at 38.89%, missing the target of 18 leads by 11.
-* **Lagging Pipeline Value (Medium Severity):** Total pipeline value is at 60.00% achievement, representing a $100,000.00 gap beneath the $250,000.00 target.
-* **Notable Lost Deals (Medium Severity):** Lost deal value reached $30,000.00 during this period.
-* **Subpar Lead Quality from Cold Email (Low Severity):** The Cold Email lead source has a low average lead score of 42.00, indicating poor lead quality.
+* **Critically Low Lead Generation**: The new lead achievement rate is only 38.89%, failing to meet the target of 18 leads by a gap of 11 leads.
+* **Lagging Pipeline Volume**: Total pipeline value is currently at 60.00% of the targeted level, presenting a $100,000.0 deficit against the $250,000.0 target.
+* **Notable Revenue Leakage**: Notable lost deal value has reached $30,000.0.
+* **Weak Lead Quality in Specific Channels**: The Cold Email lead source exhibits a low average lead score of 42.00, suggesting targeting or qualification issues.
 
 ## Recommended Management Actions
 
-* **Optimize Marketing Campaigns (High Priority):** The Marketing team must review campaign performance and prioritize channels with higher lead quality. *(Timeline: This week)*
-* **Accelerate Pipeline Generation and Review Open Deals (Medium Priority):** The Sales team needs to increase qualified opportunity generation and review open deal progression. *(Timeline: Next 2 weeks)*
-* **Review Lost Deal Objections (Medium Priority):** Sales Management should review lost reasons to identify repeating objections or qualification issues. *(Timeline: Next 2 weeks)*
-* **Refine Cold Email Targeting (Low Priority):** The Marketing team must review campaign targeting, messaging, and lead qualification rules specifically for the Cold Email channel. *(Timeline: This month)*
+* **Review Campaign Performance & Prioritize High-Quality Channels**: Marketing must review active campaigns to prioritize channels yielding higher lead quality and address the low lead achievement rate. *(Priority: High | Owner: Marketing | Timeline: This week)*
+* **Increase Opportunity Generation & Open Deal Progression**: Sales needs to accelerate qualified opportunity generation and review open deal progression to close the pipeline gap. *(Priority: Medium | Owner: Sales | Timeline: Next 2 weeks)*
+* **Review Lost Reasons**: Sales Management must review the reasons for lost deals to identify repeating objections or upstream qualification issues. *(Priority: Medium | Owner: Sales Management | Timeline: Next 2 weeks)*
+* **Optimize Cold Email Campaigns**: Marketing should review targeting, messaging, and qualification rules specifically for the Cold Email channel to address low average lead scores. *(Priority: Low | Owner: Marketing | Timeline: This month)*
 
 ## Notes
 
