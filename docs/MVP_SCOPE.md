@@ -37,6 +37,9 @@ Revenue Operations Manager, Sales Operations Manager, Growth Manager veya küç�
 - Provider-based LLM access layer
 - Optional LLM executive summary generation
 - `--with-llm` pipeline flag
+- Optional LLM output quality check
+- LLM quality report generation
+
 
 ## Out of Scope
 
@@ -61,14 +64,17 @@ Internal pipeline artifact:
 
 - `anomaly_report.json`
 
-Optional LLM output:
+Optional LLM outputs:
 
 - `llm_executive_summary.md`
+- `llm_quality_report.json`
 
 
 ## Success Criteria
 
 The MVP is successful if it can read sample CSV files, validate business data, calculate key business metrics, detect simple anomalies, generate structured action recommendations, produce a clear weekly executive report, and optionally generate an LLM-powered executive summary from structured pipeline outputs.
+
+The MVP is also successful if the optional LLM executive summary can be checked through a basic quality validation script that produces `llm_quality_report.json`.
 
 
 ## Technical Design Notes
@@ -87,6 +93,7 @@ The MVP uses a modular backend structure.
 | backend/run_pipeline.py | Single-command pipeline runner. |
 | `backend/llm_provider.py` | Provider-based LLM access layer. |
 | `backend/generate_llm_summary.py` | Optional LLM executive summary generation layer. |
+| `backend/check_llm_output_quality.py` | Validates the optional LLM executive summary and generates a quality report. |
 
 This structure separates configuration, utilities, business logic, and pipeline orchestration.
 
@@ -106,3 +113,23 @@ It generates:
 - `llm_executive_summary.md`
 
 The LLM does not perform raw KPI calculations. It only summarizes and explains already-processed business outputs.
+
+
+## LLM Quality Check Scope
+
+The project includes a basic quality check for the optional LLM executive summary.
+
+The quality check validates:
+
+- required Markdown sections
+- expected source file references
+- minimum output length
+- risky LLM phrases
+- readability of structured JSON inputs
+
+It generates:
+
+- `llm_quality_report.json`
+
+This is not a full hallucination detection layer. It is a first-level quality gate for structure, completeness, and basic reliability.
+

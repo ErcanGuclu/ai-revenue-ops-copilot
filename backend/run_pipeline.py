@@ -40,6 +40,14 @@ LLM_PIPELINE_STEPS = [
 ]
 
 
+LLM_QUALITY_CHECK_STEPS = [
+    {
+        "name": "LLM output quality check",
+        "script": "check_llm_output_quality.py",
+    },
+]
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run the AI Revenue Operations Copilot pipeline."
@@ -51,7 +59,18 @@ def parse_args() -> argparse.Namespace:
         help="Run optional LLM enrichment step after the core deterministic pipeline.",
     )
 
-    return parser.parse_args()
+    parser.add_argument(
+        "--check-llm-quality",
+        action="store_true",
+        help="Run LLM output quality check after generating the optional LLM summary.",
+    )
+
+    args = parser.parse_args()
+
+    if args.check_llm_quality and not args.with_llm:
+        parser.error("'--check-llm-quality' requires '--with-llm'.")
+
+    return args
 
 
 def run_step(step_name: str, script_name: str) -> None:
@@ -78,7 +97,7 @@ def run_steps(steps: list[dict]) -> None:
         run_step(step["name"], step["script"])
 
 
-def print_generated_outputs(with_llm: bool) -> None:
+def print_generated_outputs(with_llm: bool, check_llm_quality: bool) -> None:
     print("\nGenerated outputs:")
     print("- outputs/kpi_summary.json")
     print("- outputs/anomaly_report.json")
@@ -87,6 +106,9 @@ def print_generated_outputs(with_llm: bool) -> None:
 
     if with_llm:
         print("- outputs/llm_executive_summary.md")
+
+    if check_llm_quality:
+        print("- outputs/llm_quality_report.json")
 
 
 def main() -> None:
@@ -102,15 +124,29 @@ def main() -> None:
     if args.with_llm:
         print("\nRunning optional LLM enrichment layer...\n")
         run_steps(LLM_PIPELINE_STEPS)
+
+        if args.check_llm_quality:
+            print("\nRunning optional LLM output quality check...\n")
+            run_steps(LLM_QUALITY_CHECK_STEPS)
+        else:
+            print("\nSkipping LLM output quality check.")
+            print(
+                "Use '--with-llm --check-llm-quality' to generate "
+                "outputs/llm_quality_report.json."
+            )
     else:
         print("\nSkipping optional LLM enrichment layer.")
         print("Use '--with-llm' to generate outputs/llm_executive_summary.md.")
+        print("LLM quality check is also skipped because LLM summary was not generated.")
 
     print("=" * 80)
     print("PIPELINE COMPLETED SUCCESSFULLY")
     print("=" * 80)
 
-    print_generated_outputs(with_llm=args.with_llm)
+    print_generated_outputs(
+        with_llm=args.with_llm,
+        check_llm_quality=args.check_llm_quality,
+    )
 
 
 if __name__ == "__main__":
