@@ -57,13 +57,18 @@ It does not include real CRM, advertising platform, or SaaS integrations yet.
 - `outputs/weekly_revenue_report.md`
 
 
-### Optional LLM Output
+### Optional LLM Outputs
 
 - `outputs/llm_executive_summary.md`
+- `outputs/llm_quality_report.json`
 
-This output is generated only when the pipeline is executed with:
+`llm_executive_summary.md` is generated when the pipeline is executed with:
 
 `python backend/run_pipeline.py --with-llm`
+
+`llm_quality_report.json` is generated when the LLM quality check is executed with:
+
+`python backend/check_llm_output_quality.py`
 
 
 ### Internal Pipeline Output
@@ -119,6 +124,8 @@ The backend is organized into small, focused Python modules.
 | backend/run_pipeline.py | Runs the full pipeline in the correct order. |
 | `backend/llm_provider.py` | Provides a centralized provider-based LLM access layer. |
 | `backend/generate_llm_summary.py` | Generates an optional LLM-powered executive summary from structured JSON outputs. |
+| `backend/check_llm_output_quality.py` | Validates the optional LLM executive summary and generates a quality report. |
+| `outputs/llm_quality_report.json` | Stores the LLM output quality check result. |
 
 
 ## Configuration
@@ -143,6 +150,8 @@ Anomaly detection thresholds are not hardcoded inside the analysis logic. They a
 LLM settings are managed through `.env` and `backend/config.py`.
 
 The repository includes `.env.example` as a safe template.
+
+Note: `gemini-2.5-flash-lite` is used as the default Gemini model for this project because it is more suitable for lightweight, portfolio-level LLM enrichment tasks.
 
 Example:
 
@@ -178,6 +187,11 @@ The first active provider is Google Gemini. OpenAI can be added later as an alte
 - Optional LLM executive summary generation
 - `--with-llm` pipeline flag
 - Separation between deterministic core pipeline and optional LLM enrichment
+- LLM output quality check layer
+- LLM quality report generation
+- Basic validation for required LLM summary sections
+- Basic validation for source file references
+- Risky LLM phrase detection
 
 
 ## Calculated KPIs
@@ -262,6 +276,31 @@ and generates:
 
 The LLM does not calculate KPIs directly. It receives already validated and structured outputs from the deterministic pipeline and turns them into a business-oriented executive summary.
 
+
+## LLM Output Quality Check
+
+The project includes a basic quality check layer for the optional LLM executive summary.
+
+Run:
+
+`python backend/check_llm_output_quality.py`
+
+This script validates:
+
+- whether the LLM summary file exists and is readable
+- whether required Markdown sections are present
+- whether expected source file references are included
+- whether the output meets a minimum length threshold
+- whether risky LLM phrases are present
+- whether structured JSON input files are readable
+
+The script generates:
+
+- `outputs/llm_quality_report.json`
+
+This quality check is not a full hallucination detector. It is a first-level quality gate that checks structure, completeness, and basic reliability signals.
+
+
 ## Project Structure
 
 ```text
@@ -278,7 +317,8 @@ ai-revenue-ops-copilot/
 │   ├── generate_report.py
 │   ├── run_pipeline.py
 │   ├── llm_provider.py
-│   └── generate_llm_summary.py
+│   ├── generate_llm_summary.py
+│   └── check_llm_output_quality.py
 │
 ├── data/
 │   ├── sales_pipeline.csv
@@ -290,10 +330,11 @@ ai-revenue-ops-copilot/
 │
 ├── outputs/
 │   ├── kpi_summary.json
+│   ├── anomaly_report.json  # Internal pipeline artifact
 │   ├── action_recommendations.json
 │   ├── weekly_revenue_report.md
-│   ├── anomaly_report.json  # Internal pipeline artifact
-│   └── llm_executive_summary.md
+│   ├── llm_executive_summary.md
+│   └── llm_quality_report.json
 │
 ├── tests/
 │   ├── test_config.py
@@ -342,6 +383,18 @@ This runs the deterministic pipeline without any LLM API call.
 
 This runs the deterministic pipeline and then generates the optional LLM executive summary.
 
+
+### Run LLM Output Quality Check
+
+After generating the optional LLM executive summary, run:
+
+`python backend/check_llm_output_quality.py`
+
+This generates:
+
+- `outputs/llm_quality_report.json`
+
+
 ### Environment Setup for LLM
 
 Copy `.env.example` to `.env` and add your Gemini API key:
@@ -367,6 +420,10 @@ The following internal pipeline artifact is also generated:
 The main business-facing output is:
 
 - outputs/weekly_revenue_report.md
+
+If the LLM quality check is executed, the following quality report is also generated:
+
+- `outputs/llm_quality_report.json`
 
 
 ## Demo Outputs
@@ -412,6 +469,10 @@ Completed:
 - Optional LLM executive summary generation
 - `--with-llm` pipeline flag
 - GitHub-ready documentation
+- LLM output quality check layer
+- LLM quality report generation
+- Basic LLM summary structure validation
+- Basic source reference validation
 
 
 ## Next Development Steps
@@ -426,6 +487,9 @@ Planned next steps:
 - Add RAG/document intelligence layer for business context
 - Add agentic workflow orchestration
 - Add CRM/API integration mock layer
+- Add stronger LLM factual consistency checks
+- Validate numeric claims against structured JSON outputs
+- Add structured LLM output mode
 
 
 ## Strategic Positioning
