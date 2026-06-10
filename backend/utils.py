@@ -44,3 +44,13 @@ def save_text(file_name: str, content: str) -> Path:
         file.write(content)
 
     return output_path
+
+
+def load_text(file_name: str) -> str:
+    file_path = OUTPUT_DIR / file_name
+
+    if not file_path.exists():
+        raise FileNotFoundError(f"Text dosyası bulunamadı: {file_path}")
+
+    with file_path.open("r", encoding="utf-8") as file:
+        return file.read()
