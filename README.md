@@ -147,6 +147,7 @@ The backend is organized into small, focused Python modules.
 | `backend/generate_llm_summary.py` | Generates an optional LLM-powered executive summary from structured JSON outputs. |
 | `backend/check_llm_output_quality.py` | Validates the optional LLM executive summary and generates a quality report. |
 | `outputs/llm_quality_report.json` | Stores the LLM output quality check result. |
+| `backend/api.py` | Defines the FastAPI application and API endpoints for health checks, pipeline status, and core pipeline execution. |
 
 
 ## Configuration
@@ -369,8 +370,10 @@ ai-revenue-ops-copilot/
 │   └── llm_quality_report.json
 │
 ├── tests/
+│   ├── test_api_health.py
 │   ├── test_config.py
 │   └── test_pipeline_outputs.py
+│
 │
 ├── frontend/
 ├── notebooks/
@@ -388,17 +391,22 @@ The project currently requires:
 
 - Python 3.x
 - pandas
+- pytest
+- python-dotenv
+- google-genai
+- fastapi
+- uvicorn
 
 Install dependencies:
 
 ```powershell
-pip install pandas
+pip install -r requirements.txt
 ```
 
 Or, if using a specific Python executable:
 
 ```powershell
-& "c:\Python314\python.exe" -m pip install pandas
+& "c:\Python314\python.exe" -m pip install -r requirements.txt
 ```
 
 ## How to Run
@@ -526,7 +534,7 @@ The main business-facing artifact is:
 
 ## Current Status
 
-MVP v0.2 is in progress.
+MVP v0.3 is in progress, focused on the FastAPI backend layer.
 
 Completed:
 
@@ -559,21 +567,22 @@ Completed:
 - Core pipeline run API endpoint
 
 
-
 ## Next Development Steps
 
 Planned next steps:
 
+- Add request options to the pipeline run API endpoint
+- Add optional LLM execution through the API
+- Add optional LLM quality check execution through the API
+- Refactor pipeline execution into a shared service layer
 - Improve LLM prompt structure
 - Add structured LLM output mode
-- Add FastAPI backend endpoint
+- Add stronger LLM factual consistency checks
+- Validate numeric claims against structured JSON outputs
 - Add simple dashboard interface
 - Add RAG/document intelligence layer for business context
 - Add agentic workflow orchestration
 - Add CRM/API integration mock layer
-- Add stronger LLM factual consistency checks
-- Validate numeric claims against structured JSON outputs
-- Add structured LLM output mode
 
 
 ## Strategic Positioning
@@ -605,10 +614,10 @@ It shows the ability to:
 - create tests for configuration and pipeline behavior,
 - maintain the project with Git and clear documentation.
 
-Future versions can extend this MVP with FastAPI, LLM-generated summaries, RAG-based business context, agentic workflow orchestration, and dashboard interfaces.
+Future versions can extend this MVP with richer API options, LLM execution through the API, RAG-based business context, agentic workflow orchestration, and dashboard interfaces.
 
 ## Interview Summary
 
 This project demonstrates an end-to-end business data workflow: CSV data ingestion, validation, KPI calculation, anomaly detection, structured action recommendation generation, and executive Markdown reporting.
 
-The current MVP intentionally focuses on a deterministic and explainable analytics pipeline before adding LLM, RAG, API, or agentic workflow layers.
+The current MVP combines a deterministic and explainable analytics pipeline with optional LLM enrichment, LLM quality checks, and an initial FastAPI backend layer.
