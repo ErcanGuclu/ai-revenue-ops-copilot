@@ -213,6 +213,8 @@ The first active provider is Google Gemini. OpenAI can be added later as an alte
 - Basic validation for required LLM summary sections
 - Basic validation for source file references
 - Risky LLM phrase detection
+- Initial FastAPI backend layer
+- Health check endpoint
 
 
 ## Calculated KPIs
@@ -343,7 +345,8 @@ ai-revenue-ops-copilot/
 │   ├── run_pipeline.py
 │   ├── llm_provider.py
 │   ├── generate_llm_summary.py
-│   └── check_llm_output_quality.py
+│   ├── check_llm_output_quality.py
+│   └── api.py
 │
 ├── data/
 │   ├── sales_pipeline.csv
@@ -413,6 +416,23 @@ This runs the deterministic pipeline and then generates the optional LLM executi
 `python backend/run_pipeline.py --with-llm --check-llm-quality`
 
 This runs the deterministic pipeline, generates the optional LLM executive summary, and then validates the LLM output through the quality check layer.
+
+### Run API Server
+
+`python -m uvicorn backend.api:app --reload`
+
+Health endpoint:
+
+`GET /health`
+
+Local URL:
+
+`http://127.0.0.1:8000/health`
+
+Interactive API docs:
+
+`http://127.0.0.1:8000/docs`
+
 
 ### Invalid Usage
 
