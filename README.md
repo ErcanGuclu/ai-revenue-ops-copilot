@@ -217,6 +217,8 @@ The first active provider is Google Gemini. OpenAI can be added later as an alte
 - Health check endpoint
 - Pipeline status endpoint
 - API-based output availability check
+- Pipeline run API endpoint
+- API-triggered core pipeline execution
 
 
 ## Calculated KPIs
@@ -445,6 +447,23 @@ Local URL:
 `http://127.0.0.1:8000/pipeline/status`
 
 
+### Run Core Pipeline Through API
+
+Start the API server:
+
+`python -m uvicorn backend.api:app --reload`
+
+Then call:
+
+`POST /pipeline/run`
+
+Local Swagger UI:
+
+`http://127.0.0.1:8000/docs`
+
+The first version of this endpoint runs only the core deterministic pipeline. It does not run the optional LLM enrichment or LLM quality check layers.
+
+
 ### Invalid Usage
 
 The following command is intentionally not allowed:
@@ -537,6 +556,7 @@ Completed:
 - Optional LLM quality check pipeline flag
 - Guardrail preventing LLM quality check without LLM summary generation
 - Pipeline status API endpoint
+- Core pipeline run API endpoint
 
 
 
