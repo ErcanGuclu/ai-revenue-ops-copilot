@@ -66,7 +66,11 @@ It does not include real CRM, advertising platform, or SaaS integrations yet.
 
 `python backend/run_pipeline.py --with-llm`
 
-`llm_quality_report.json` is generated when the LLM quality check is executed with:
+`llm_quality_report.json` is generated when the pipeline is executed with:
+
+`python backend/run_pipeline.py --with-llm --check-llm-quality`
+
+Alternatively, the quality check can be run manually after generating the LLM executive summary:
 
 `python backend/check_llm_output_quality.py`
 
@@ -79,9 +83,9 @@ This file is an internal analysis artifact used for anomaly detection and action
 
 ## Current Pipeline
 
-The project has two execution modes.
+The project has three execution modes.
 
-### Core Deterministic Pipeline
+### 1. Core Deterministic Pipeline
 
 Run:
 
@@ -96,7 +100,9 @@ This mode performs:
 5. Structured action recommendation generation
 6. Markdown executive report generation
 
-### Optional LLM Enrichment Pipeline
+This mode does not require an LLM API key, internet access, or model availability.
+
+### 2. Core Pipeline with Optional LLM Enrichment
 
 Run:
 
@@ -106,7 +112,22 @@ This mode performs all core pipeline steps and then generates:
 
 - `outputs/llm_executive_summary.md`
 
-The LLM enrichment layer is optional. The core pipeline does not depend on API access, internet connectivity, or model availability.
+The LLM enrichment layer is optional and depends on the configured LLM provider.
+
+### 3. Core Pipeline with LLM Enrichment and Quality Check
+
+Run:
+
+`python backend/run_pipeline.py --with-llm --check-llm-quality`
+
+This mode performs all core pipeline steps, generates the optional LLM executive summary, and then runs the LLM output quality check.
+
+It generates:
+
+- `outputs/llm_executive_summary.md`
+- `outputs/llm_quality_report.json`
+
+The `--check-llm-quality` flag requires `--with-llm`, because the quality check can only validate an existing LLM summary.
 
 ## Technical Architecture
 
@@ -281,7 +302,11 @@ The LLM does not calculate KPIs directly. It receives already validated and stru
 
 The project includes a basic quality check layer for the optional LLM executive summary.
 
-Run:
+The quality check can be run through the main pipeline:
+
+`python backend/run_pipeline.py --with-llm --check-llm-quality`
+
+or manually after generating the LLM summary:
 
 `python backend/check_llm_output_quality.py`
 
@@ -383,17 +408,21 @@ This runs the deterministic pipeline without any LLM API call.
 
 This runs the deterministic pipeline and then generates the optional LLM executive summary.
 
+### Run Core Pipeline with LLM Enrichment and Quality Check
 
-### Run LLM Output Quality Check
+`python backend/run_pipeline.py --with-llm --check-llm-quality`
 
-After generating the optional LLM executive summary, run:
+This runs the deterministic pipeline, generates the optional LLM executive summary, and then validates the LLM output through the quality check layer.
 
-`python backend/check_llm_output_quality.py`
+### Invalid Usage
 
-This generates:
+The following command is intentionally not allowed:
 
-- `outputs/llm_quality_report.json`
+`python backend/run_pipeline.py --check-llm-quality`
 
+The quality check requires an LLM summary to exist, so it must be used together with:
+
+`--with-llm`
 
 ### Environment Setup for LLM
 
@@ -407,21 +436,21 @@ The `.env` file must not be committed to Git.
 
 ## Expected Result
 
-After running the pipeline, the following official MVP output files are generated or updated:
+After running the core pipeline, the following official MVP output files are generated or updated:
 
-- outputs/kpi_summary.json
-- outputs/action_recommendations.json
-- outputs/weekly_revenue_report.md
+- `outputs/kpi_summary.json`
+- `outputs/action_recommendations.json`
+- `outputs/weekly_revenue_report.md`
 
 The following internal pipeline artifact is also generated:
 
-- outputs/anomaly_report.json
+- `outputs/anomaly_report.json`
 
-The main business-facing output is:
+If the pipeline is run with `--with-llm`, the following optional LLM output is also generated:
 
-- outputs/weekly_revenue_report.md
+- `outputs/llm_executive_summary.md`
 
-If the LLM quality check is executed, the following quality report is also generated:
+If the pipeline is run with `--with-llm --check-llm-quality`, the following optional LLM quality output is also generated:
 
 - `outputs/llm_quality_report.json`
 
@@ -473,6 +502,10 @@ Completed:
 - LLM quality report generation
 - Basic LLM summary structure validation
 - Basic source reference validation
+- Three-mode pipeline execution
+- Optional LLM quality check pipeline flag
+- Guardrail preventing LLM quality check without LLM summary generation
+
 
 
 ## Next Development Steps
@@ -480,7 +513,6 @@ Completed:
 Planned next steps:
 
 - Improve LLM prompt structure
-- Add LLM output quality checks
 - Add structured LLM output mode
 - Add FastAPI backend endpoint
 - Add simple dashboard interface
