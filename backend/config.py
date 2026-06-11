@@ -22,6 +22,8 @@ OUTPUT_FILES = {
     "anomaly_report": "anomaly_report.json",
     "action_recommendations": "action_recommendations.json",
     "weekly_revenue_report": "weekly_revenue_report.md",
+    "llm_executive_summary": "llm_executive_summary.md",
+    "llm_quality_report": "llm_quality_report.json",
 }
 
 

@@ -43,6 +43,8 @@ def test_output_files_config_contains_expected_keys():
         "anomaly_report",
         "action_recommendations",
         "weekly_revenue_report",
+        "llm_executive_summary",
+        "llm_quality_report",
     }
 
     assert set(OUTPUT_FILES.keys()) == expected_keys

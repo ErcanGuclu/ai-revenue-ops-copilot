@@ -215,6 +215,8 @@ The first active provider is Google Gemini. OpenAI can be added later as an alte
 - Risky LLM phrase detection
 - Initial FastAPI backend layer
 - Health check endpoint
+- Pipeline status endpoint
+- API-based output availability check
 
 
 ## Calculated KPIs
@@ -434,6 +436,15 @@ Interactive API docs:
 `http://127.0.0.1:8000/docs`
 
 
+Pipeline status endpoint:
+
+`GET /pipeline/status`
+
+Local URL:
+
+`http://127.0.0.1:8000/pipeline/status`
+
+
 ### Invalid Usage
 
 The following command is intentionally not allowed:
@@ -525,6 +536,7 @@ Completed:
 - Three-mode pipeline execution
 - Optional LLM quality check pipeline flag
 - Guardrail preventing LLM quality check without LLM summary generation
+- Pipeline status API endpoint
 
 
 
