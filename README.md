@@ -155,6 +155,7 @@ The backend is organized into small, focused Python modules.
 | `PipelineErrorDetail` | Defines structured error details for invalid or failed pipeline requests. |
 | `backend/pipeline_service.py` | Provides pipeline execution, output status, command building, and pipeline mode logic for the API layer. |
 | `backend/api_models.py` | Stores Pydantic request and response models used by the FastAPI layer. |
+Technical Architecture
 
 
 ## Configuration
@@ -227,6 +228,18 @@ The first active provider is Google Gemini. OpenAI can be added later as an alte
 - API-based output availability check
 - Pipeline run API endpoint
 - API-triggered core pipeline execution
+- Request body support for pipeline run API
+- API-controlled LLM pipeline execution options
+- Validation for invalid LLM quality check requests
+- Pydantic response models for API endpoints
+- Structured API response schemas
+- Typed pipeline output status response
+- Dedicated pipeline service layer
+- Separation between API layer and pipeline execution logic
+- Service-level pipeline command builder
+- Dedicated API models module
+- Separation between endpoint definitions and API schemas
+- Centralized Pydantic request and response models
 - Request body support for pipeline run API
 - API-controlled LLM pipeline execution options
 - Validation for invalid LLM quality check requests
@@ -370,9 +383,9 @@ ai-revenue-ops-copilot/
 │   ├── llm_provider.py
 │   ├── generate_llm_summary.py
 │   ├── check_llm_output_quality.py
-│   ├── pipeline_service.py
+│   ├── api.py
 │   ├── api_models.py
-│   └── api.py
+│   └── pipeline_service.py
 │
 ├── data/
 │   ├── sales_pipeline.csv
@@ -392,11 +405,10 @@ ai-revenue-ops-copilot/
 │
 ├── tests/
 │   ├── test_api_health.py
-│   ├── test_pipeline_service.py
-│   ├── test_config.py
 │   ├── test_api_models.py
-│   └── test_pipeline_outputs.py
-│
+│   ├── test_config.py
+│   ├── test_pipeline_outputs.py
+│   └── test_pipeline_service.py
 │
 ├── frontend/
 ├── notebooks/
@@ -452,9 +464,27 @@ This runs the deterministic pipeline and then generates the optional LLM executi
 
 This runs the deterministic pipeline, generates the optional LLM executive summary, and then validates the LLM output through the quality check layer.
 
+### Invalid CLI Usage
+
+The following command is intentionally not allowed:
+
+`python backend/run_pipeline.py --check-llm-quality`
+
+The quality check requires an LLM summary to exist, so it must be used together with:
+
+`--with-llm`
+
 ### Run API Server
 
+Start the API server:
+
 `python -m uvicorn backend.api:app --reload`
+
+Local Swagger UI:
+
+`http://127.0.0.1:8000/docs`
+
+### API Endpoints
 
 Health endpoint:
 
@@ -464,11 +494,6 @@ Local URL:
 
 `http://127.0.0.1:8000/health`
 
-Interactive API docs:
-
-`http://127.0.0.1:8000/docs`
-
-
 Pipeline status endpoint:
 
 `GET /pipeline/status`
@@ -477,20 +502,19 @@ Local URL:
 
 `http://127.0.0.1:8000/pipeline/status`
 
+Pipeline run endpoint:
+
+`POST /pipeline/run`
 
 ### Run Pipeline Through API
 
-Start the API server:
+Use the Swagger UI:
 
-`python -m uvicorn backend.api:app --reload`
+`http://127.0.0.1:8000/docs`
 
 Then call:
 
 `POST /pipeline/run`
-
-Local Swagger UI:
-
-`http://127.0.0.1:8000/docs`
 
 Request examples:
 
@@ -532,25 +556,16 @@ Invalid request:
 
 `check_llm_quality` requires `with_llm` to be `true`.
 
-### Invalid Usage
-
-The following command is intentionally not allowed:
-
-`python backend/run_pipeline.py --check-llm-quality`
-
-The quality check requires an LLM summary to exist, so it must be used together with:
-
-`--with-llm`
-
 ### Environment Setup for LLM
 
 Copy `.env.example` to `.env` and add your Gemini API key:
 
-- `LLM_PROVIDER=gemini`
-- `GEMINI_API_KEY=your_actual_key`
-- `GEMINI_MODEL=gemini-2.5-flash-lite`
+* `LLM_PROVIDER=gemini`
+* `GEMINI_API_KEY=your_actual_key`
+* `GEMINI_MODEL=gemini-2.5-flash-lite`
 
 The `.env` file must not be committed to Git.
+
 
 ## Expected Result
 
@@ -623,6 +638,8 @@ Completed:
 - Three-mode pipeline execution
 - Optional LLM quality check pipeline flag
 - Guardrail preventing LLM quality check without LLM summary generation
+- Initial FastAPI backend layer
+- Health check endpoint
 - Pipeline status API endpoint
 - Core pipeline run API endpoint
 - Pipeline run request model
@@ -679,10 +696,10 @@ It shows the ability to:
 - create tests for configuration and pipeline behavior,
 - maintain the project with Git and clear documentation.
 
-Future versions can extend this MVP with richer API options, LLM execution through the API, RAG-based business context, agentic workflow orchestration, and dashboard interfaces.
+Future versions can extend this MVP with richer API options, structured LLM outputs, stronger factual consistency checks, RAG-based business context, agentic workflow orchestration, and dashboard interfaces.
 
 ## Interview Summary
 
-This project demonstrates an end-to-end business data workflow: CSV data ingestion, validation, KPI calculation, anomaly detection, structured action recommendation generation, and executive Markdown reporting.
+This project demonstrates an end-to-end business data workflow: CSV data ingestion, validation, KPI calculation, anomaly detection, structured action recommendation generation, executive Markdown reporting, optional LLM enrichment, LLM output quality checks, and FastAPI-based backend access.
 
-The current MVP combines a deterministic and explainable analytics pipeline with optional LLM enrichment, LLM quality checks, and an initial FastAPI backend layer.
+The current MVP combines a deterministic and explainable analytics pipeline with optional LLM enrichment, LLM quality validation, API request/response models, and a service-layer backend structure.
