@@ -1,11 +1,14 @@
 import subprocess
-import sys
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from backend.config import BASE_DIR, OUTPUT_DIR, OUTPUT_FILES
+from backend.pipeline_service import (
+    determine_pipeline_mode,
+    get_output_status,
+    run_pipeline_process,
+)
 
 
 app = FastAPI(
@@ -51,40 +54,8 @@ class PipelineErrorDetail(BaseModel):
     details: str
 
 
-def get_output_status() -> PipelineOutputsStatus:
-    output_status = {}
-
-    for output_name, file_name in OUTPUT_FILES.items():
-        output_status[output_name] = (OUTPUT_DIR / file_name).exists()
-
-    return PipelineOutputsStatus(**output_status)
-
-
-def build_pipeline_command(request: PipelineRunRequest) -> list[str]:
-    command = [
-        sys.executable,
-        str(BASE_DIR / "backend" / "run_pipeline.py"),
-    ]
-
-    if request.with_llm:
-        command.append("--with-llm")
-
-    if request.check_llm_quality:
-        command.append("--check-llm-quality")
-
-    return command
-
-
-def determine_pipeline_mode(
-    request: PipelineRunRequest,
-) -> Literal["core", "core_with_llm", "core_with_llm_and_quality_check"]:
-    if request.with_llm and request.check_llm_quality:
-        return "core_with_llm_and_quality_check"
-
-    if request.with_llm:
-        return "core_with_llm"
-
-    return "core"
+def build_outputs_status_response() -> PipelineOutputsStatus:
+    return PipelineOutputsStatus(**get_output_status())
 
 
 @app.get("/health")
@@ -99,7 +70,7 @@ def health_check() -> dict[str, str]:
 def pipeline_status() -> PipelineStatusResponse:
     return PipelineStatusResponse(
         status="ok",
-        outputs=get_output_status(),
+        outputs=build_outputs_status_response(),
     )
 
 
@@ -122,15 +93,10 @@ def run_pipeline(
             detail=error_detail.model_dump(),
         )
 
-    command = build_pipeline_command(request)
-
     try:
-        subprocess.run(
-            command,
-            cwd=BASE_DIR,
-            capture_output=True,
-            text=True,
-            check=True,
+        run_pipeline_process(
+            with_llm=request.with_llm,
+            check_llm_quality=request.check_llm_quality,
         )
 
     except subprocess.CalledProcessError as error:
@@ -154,6 +120,9 @@ def run_pipeline(
     return PipelineRunSuccessResponse(
         status="success",
         message="Pipeline completed successfully.",
-        mode=determine_pipeline_mode(request),
-        outputs=get_output_status(),
+        mode=determine_pipeline_mode(
+            with_llm=request.with_llm,
+            check_llm_quality=request.check_llm_quality,
+        ),
+        outputs=build_outputs_status_response(),
     )

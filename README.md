@@ -153,6 +153,7 @@ The backend is organized into small, focused Python modules.
 | `PipelineStatusResponse` | Defines the response schema for `GET /pipeline/status`. |
 | `PipelineRunSuccessResponse` | Defines the successful response schema for `POST /pipeline/run`. |
 | `PipelineErrorDetail` | Defines structured error details for invalid or failed pipeline requests. |
+| `backend/pipeline_service.py` | Provides pipeline execution, output status, command building, and pipeline mode logic for the API layer. |
 
 
 ## Configuration
@@ -231,6 +232,9 @@ The first active provider is Google Gemini. OpenAI can be added later as an alte
 - Pydantic response models for API endpoints
 - Structured API response schemas
 - Typed pipeline output status response
+- Dedicated pipeline service layer
+- Separation between API layer and pipeline execution logic
+- Service-level pipeline command builder
 
 
 ## Calculated KPIs
@@ -362,6 +366,7 @@ ai-revenue-ops-copilot/
 │   ├── llm_provider.py
 │   ├── generate_llm_summary.py
 │   ├── check_llm_output_quality.py
+│   ├── pipeline_service.py
 │   └── api.py
 │
 ├── data/
@@ -382,6 +387,7 @@ ai-revenue-ops-copilot/
 │
 ├── tests/
 │   ├── test_api_health.py
+│   ├── test_pipeline_service.py
 │   ├── test_config.py
 │   └── test_pipeline_outputs.py
 │
@@ -617,13 +623,15 @@ Completed:
 - API-controlled pipeline execution modes
 - Pydantic response models for API endpoints
 - Structured API response schemas
+- Dedicated pipeline service layer
+- API/service responsibility separation
 
 
 ## Next Development Steps
 
 Planned next steps:
 
-- Refactor pipeline execution into a shared service layer
+- Refactor API models into a dedicated module
 - Improve LLM prompt structure
 - Add structured LLM output mode
 - Add stronger LLM factual consistency checks
