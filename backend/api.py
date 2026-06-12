@@ -1,6 +1,6 @@
 import subprocess
 import sys
-from typing import Any
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -20,13 +20,44 @@ class PipelineRunRequest(BaseModel):
     check_llm_quality: bool = False
 
 
-def get_output_status() -> dict[str, bool]:
+class PipelineOutputsStatus(BaseModel):
+    kpi_summary: bool
+    anomaly_report: bool
+    action_recommendations: bool
+    weekly_revenue_report: bool
+    llm_executive_summary: bool
+    llm_quality_report: bool
+
+
+class PipelineStatusResponse(BaseModel):
+    status: Literal["ok"]
+    outputs: PipelineOutputsStatus
+
+
+class PipelineRunSuccessResponse(BaseModel):
+    status: Literal["success"]
+    message: str
+    mode: Literal[
+        "core",
+        "core_with_llm",
+        "core_with_llm_and_quality_check",
+    ]
+    outputs: PipelineOutputsStatus
+
+
+class PipelineErrorDetail(BaseModel):
+    status: Literal["error"]
+    message: str
+    details: str
+
+
+def get_output_status() -> PipelineOutputsStatus:
     output_status = {}
 
     for output_name, file_name in OUTPUT_FILES.items():
         output_status[output_name] = (OUTPUT_DIR / file_name).exists()
 
-    return output_status
+    return PipelineOutputsStatus(**output_status)
 
 
 def build_pipeline_command(request: PipelineRunRequest) -> list[str]:
@@ -44,7 +75,9 @@ def build_pipeline_command(request: PipelineRunRequest) -> list[str]:
     return command
 
 
-def determine_pipeline_mode(request: PipelineRunRequest) -> str:
+def determine_pipeline_mode(
+    request: PipelineRunRequest,
+) -> Literal["core", "core_with_llm", "core_with_llm_and_quality_check"]:
     if request.with_llm and request.check_llm_quality:
         return "core_with_llm_and_quality_check"
 
@@ -62,27 +95,31 @@ def health_check() -> dict[str, str]:
     }
 
 
-@app.get("/pipeline/status")
-def pipeline_status() -> dict[str, Any]:
-    return {
-        "status": "ok",
-        "outputs": get_output_status(),
-    }
+@app.get("/pipeline/status", response_model=PipelineStatusResponse)
+def pipeline_status() -> PipelineStatusResponse:
+    return PipelineStatusResponse(
+        status="ok",
+        outputs=get_output_status(),
+    )
 
 
-@app.post("/pipeline/run")
-def run_pipeline(request: PipelineRunRequest | None = None) -> dict[str, Any]:
+@app.post("/pipeline/run", response_model=PipelineRunSuccessResponse)
+def run_pipeline(
+    request: PipelineRunRequest | None = None,
+) -> PipelineRunSuccessResponse:
     if request is None:
         request = PipelineRunRequest()
 
     if request.check_llm_quality and not request.with_llm:
+        error_detail = PipelineErrorDetail(
+            status="error",
+            message="Invalid pipeline run request.",
+            details="`check_llm_quality` requires `with_llm` to be true.",
+        )
+
         raise HTTPException(
             status_code=400,
-            detail={
-                "status": "error",
-                "message": "Invalid pipeline run request.",
-                "details": "`check_llm_quality` requires `with_llm` to be true.",
-            },
+            detail=error_detail.model_dump(),
         )
 
     command = build_pipeline_command(request)
@@ -103,18 +140,20 @@ def run_pipeline(request: PipelineRunRequest | None = None) -> dict[str, Any]:
             or "Unknown pipeline execution error."
         )
 
-        raise HTTPException(
-            status_code=500,
-            detail={
-                "status": "error",
-                "message": "Pipeline failed.",
-                "details": error_details,
-            },
+        error_detail = PipelineErrorDetail(
+            status="error",
+            message="Pipeline failed.",
+            details=error_details,
         )
 
-    return {
-        "status": "success",
-        "message": "Pipeline completed successfully.",
-        "mode": determine_pipeline_mode(request),
-        "outputs": get_output_status(),
-    }
+        raise HTTPException(
+            status_code=500,
+            detail=error_detail.model_dump(),
+        )
+
+    return PipelineRunSuccessResponse(
+        status="success",
+        message="Pipeline completed successfully.",
+        mode=determine_pipeline_mode(request),
+        outputs=get_output_status(),
+    )

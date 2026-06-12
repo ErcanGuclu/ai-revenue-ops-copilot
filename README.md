@@ -148,6 +148,11 @@ The backend is organized into small, focused Python modules.
 | `backend/check_llm_output_quality.py` | Validates the optional LLM executive summary and generates a quality report. |
 | `outputs/llm_quality_report.json` | Stores the LLM output quality check result. |
 | `backend/api.py` | Defines the FastAPI application and API endpoints for health checks, pipeline status, and core pipeline execution. |
+| `PipelineRunRequest` | Defines the request body for API-controlled pipeline execution. |
+| `PipelineOutputsStatus` | Represents boolean availability status for expected output files. |
+| `PipelineStatusResponse` | Defines the response schema for `GET /pipeline/status`. |
+| `PipelineRunSuccessResponse` | Defines the successful response schema for `POST /pipeline/run`. |
+| `PipelineErrorDetail` | Defines structured error details for invalid or failed pipeline requests. |
 
 
 ## Configuration
@@ -223,6 +228,9 @@ The first active provider is Google Gemini. OpenAI can be added later as an alte
 - Request body support for pipeline run API
 - API-controlled LLM pipeline execution options
 - Validation for invalid LLM quality check requests
+- Pydantic response models for API endpoints
+- Structured API response schemas
+- Typed pipeline output status response
 
 
 ## Calculated KPIs
@@ -607,14 +615,14 @@ Completed:
 - Core pipeline run API endpoint
 - Pipeline run request model
 - API-controlled pipeline execution modes
+- Pydantic response models for API endpoints
+- Structured API response schemas
 
 
 ## Next Development Steps
 
 Planned next steps:
 
-- Add optional LLM execution through the API
-- Add optional LLM quality check execution through the API
 - Refactor pipeline execution into a shared service layer
 - Improve LLM prompt structure
 - Add structured LLM output mode

@@ -6,6 +6,23 @@ from backend.api import app
 client = TestClient(app)
 
 
+EXPECTED_OUTPUT_KEYS = {
+    "kpi_summary",
+    "anomaly_report",
+    "action_recommendations",
+    "weekly_revenue_report",
+    "llm_executive_summary",
+    "llm_quality_report",
+}
+
+
+def assert_output_status_shape(outputs: dict) -> None:
+    assert set(outputs.keys()) == EXPECTED_OUTPUT_KEYS
+
+    for output_exists in outputs.values():
+        assert isinstance(output_exists, bool)
+
+
 def test_health_endpoint_returns_ok():
     response = client.get("/health")
 
@@ -22,20 +39,7 @@ def test_pipeline_status_endpoint_returns_output_status():
 
     assert response.status_code == 200
     assert response_json["status"] == "ok"
-
-    expected_output_keys = {
-        "kpi_summary",
-        "anomaly_report",
-        "action_recommendations",
-        "weekly_revenue_report",
-        "llm_executive_summary",
-        "llm_quality_report",
-    }
-
-    assert set(response_json["outputs"].keys()) == expected_output_keys
-
-    for output_exists in response_json["outputs"].values():
-        assert isinstance(output_exists, bool)
+    assert_output_status_shape(response_json["outputs"])
 
 
 def test_pipeline_run_endpoint_runs_core_pipeline_without_body():
@@ -46,17 +50,7 @@ def test_pipeline_run_endpoint_runs_core_pipeline_without_body():
     assert response_json["status"] == "success"
     assert response_json["message"] == "Pipeline completed successfully."
     assert response_json["mode"] == "core"
-
-    expected_output_keys = {
-        "kpi_summary",
-        "anomaly_report",
-        "action_recommendations",
-        "weekly_revenue_report",
-        "llm_executive_summary",
-        "llm_quality_report",
-    }
-
-    assert set(response_json["outputs"].keys()) == expected_output_keys
+    assert_output_status_shape(response_json["outputs"])
 
 
 def test_pipeline_run_endpoint_runs_core_pipeline_with_explicit_body():
@@ -73,6 +67,7 @@ def test_pipeline_run_endpoint_runs_core_pipeline_with_explicit_body():
     assert response_json["status"] == "success"
     assert response_json["message"] == "Pipeline completed successfully."
     assert response_json["mode"] == "core"
+    assert_output_status_shape(response_json["outputs"])
 
 
 def test_pipeline_run_endpoint_rejects_quality_check_without_llm():
