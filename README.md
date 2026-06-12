@@ -154,6 +154,7 @@ The backend is organized into small, focused Python modules.
 | `PipelineRunSuccessResponse` | Defines the successful response schema for `POST /pipeline/run`. |
 | `PipelineErrorDetail` | Defines structured error details for invalid or failed pipeline requests. |
 | `backend/pipeline_service.py` | Provides pipeline execution, output status, command building, and pipeline mode logic for the API layer. |
+| `backend/api_models.py` | Stores Pydantic request and response models used by the FastAPI layer. |
 
 
 ## Configuration
@@ -235,6 +236,9 @@ The first active provider is Google Gemini. OpenAI can be added later as an alte
 - Dedicated pipeline service layer
 - Separation between API layer and pipeline execution logic
 - Service-level pipeline command builder
+- Dedicated API models module
+- Separation between endpoint definitions and API schemas
+- Centralized Pydantic request and response models
 
 
 ## Calculated KPIs
@@ -367,6 +371,7 @@ ai-revenue-ops-copilot/
 │   ├── generate_llm_summary.py
 │   ├── check_llm_output_quality.py
 │   ├── pipeline_service.py
+│   ├── api_models.py
 │   └── api.py
 │
 ├── data/
@@ -389,6 +394,7 @@ ai-revenue-ops-copilot/
 │   ├── test_api_health.py
 │   ├── test_pipeline_service.py
 │   ├── test_config.py
+│   ├── test_api_models.py
 │   └── test_pipeline_outputs.py
 │
 │
@@ -625,13 +631,15 @@ Completed:
 - Structured API response schemas
 - Dedicated pipeline service layer
 - API/service responsibility separation
+- Dedicated API models module
+- API schema responsibility separated from endpoint layer
 
 
 ## Next Development Steps
 
 Planned next steps:
 
-- Refactor API models into a dedicated module
+- Prepare FastAPI backend v0.3 release checks
 - Improve LLM prompt structure
 - Add structured LLM output mode
 - Add stronger LLM factual consistency checks

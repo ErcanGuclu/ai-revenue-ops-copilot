@@ -1,9 +1,14 @@
 import subprocess
-from typing import Literal
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 
+from backend.api_models import (
+    PipelineErrorDetail,
+    PipelineOutputsStatus,
+    PipelineRunRequest,
+    PipelineRunSuccessResponse,
+    PipelineStatusResponse,
+)
 from backend.pipeline_service import (
     determine_pipeline_mode,
     get_output_status,
@@ -16,42 +21,6 @@ app = FastAPI(
     version="0.3.0",
     description="API layer for the AI Revenue Operations & Reporting Copilot.",
 )
-
-
-class PipelineRunRequest(BaseModel):
-    with_llm: bool = False
-    check_llm_quality: bool = False
-
-
-class PipelineOutputsStatus(BaseModel):
-    kpi_summary: bool
-    anomaly_report: bool
-    action_recommendations: bool
-    weekly_revenue_report: bool
-    llm_executive_summary: bool
-    llm_quality_report: bool
-
-
-class PipelineStatusResponse(BaseModel):
-    status: Literal["ok"]
-    outputs: PipelineOutputsStatus
-
-
-class PipelineRunSuccessResponse(BaseModel):
-    status: Literal["success"]
-    message: str
-    mode: Literal[
-        "core",
-        "core_with_llm",
-        "core_with_llm_and_quality_check",
-    ]
-    outputs: PipelineOutputsStatus
-
-
-class PipelineErrorDetail(BaseModel):
-    status: Literal["error"]
-    message: str
-    details: str
 
 
 def build_outputs_status_response() -> PipelineOutputsStatus:
