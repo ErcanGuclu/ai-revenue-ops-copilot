@@ -1,8 +1,9 @@
 import subprocess
 import sys
+from typing import Any
 
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 from backend.config import BASE_DIR, OUTPUT_DIR, OUTPUT_FILES
 
@@ -14,6 +15,11 @@ app = FastAPI(
 )
 
 
+class PipelineRunRequest(BaseModel):
+    with_llm: bool = False
+    check_llm_quality: bool = False
+
+
 def get_output_status() -> dict[str, bool]:
     output_status = {}
 
@@ -23,8 +29,33 @@ def get_output_status() -> dict[str, bool]:
     return output_status
 
 
+def build_pipeline_command(request: PipelineRunRequest) -> list[str]:
+    command = [
+        sys.executable,
+        str(BASE_DIR / "backend" / "run_pipeline.py"),
+    ]
+
+    if request.with_llm:
+        command.append("--with-llm")
+
+    if request.check_llm_quality:
+        command.append("--check-llm-quality")
+
+    return command
+
+
+def determine_pipeline_mode(request: PipelineRunRequest) -> str:
+    if request.with_llm and request.check_llm_quality:
+        return "core_with_llm_and_quality_check"
+
+    if request.with_llm:
+        return "core_with_llm"
+
+    return "core"
+
+
 @app.get("/health")
-def health_check() -> dict:
+def health_check() -> dict[str, str]:
     return {
         "status": "ok",
         "service": "ai-revenue-ops-copilot",
@@ -32,20 +63,33 @@ def health_check() -> dict:
 
 
 @app.get("/pipeline/status")
-def pipeline_status() -> dict:
+def pipeline_status() -> dict[str, Any]:
     return {
         "status": "ok",
         "outputs": get_output_status(),
     }
 
 
-@app.post("/pipeline/run", response_model=None)
-def run_pipeline():
-    pipeline_script = BASE_DIR / "backend" / "run_pipeline.py"
+@app.post("/pipeline/run")
+def run_pipeline(request: PipelineRunRequest | None = None) -> dict[str, Any]:
+    if request is None:
+        request = PipelineRunRequest()
+
+    if request.check_llm_quality and not request.with_llm:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "status": "error",
+                "message": "Invalid pipeline run request.",
+                "details": "`check_llm_quality` requires `with_llm` to be true.",
+            },
+        )
+
+    command = build_pipeline_command(request)
 
     try:
         subprocess.run(
-            [sys.executable, str(pipeline_script)],
+            command,
             cwd=BASE_DIR,
             capture_output=True,
             text=True,
@@ -59,18 +103,18 @@ def run_pipeline():
             or "Unknown pipeline execution error."
         )
 
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content={
+            detail={
                 "status": "error",
-                "message": "Core pipeline failed.",
+                "message": "Pipeline failed.",
                 "details": error_details,
             },
         )
 
     return {
         "status": "success",
-        "message": "Core pipeline completed successfully.",
-        "mode": "core",
+        "message": "Pipeline completed successfully.",
+        "mode": determine_pipeline_mode(request),
         "outputs": get_output_status(),
     }

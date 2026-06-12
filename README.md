@@ -220,6 +220,9 @@ The first active provider is Google Gemini. OpenAI can be added later as an alte
 - API-based output availability check
 - Pipeline run API endpoint
 - API-triggered core pipeline execution
+- Request body support for pipeline run API
+- API-controlled LLM pipeline execution options
+- Validation for invalid LLM quality check requests
 
 
 ## Calculated KPIs
@@ -455,7 +458,7 @@ Local URL:
 `http://127.0.0.1:8000/pipeline/status`
 
 
-### Run Core Pipeline Through API
+### Run Pipeline Through API
 
 Start the API server:
 
@@ -469,8 +472,45 @@ Local Swagger UI:
 
 `http://127.0.0.1:8000/docs`
 
-The first version of this endpoint runs only the core deterministic pipeline. It does not run the optional LLM enrichment or LLM quality check layers.
+Request examples:
 
+Core pipeline only:
+
+```json
+{
+  "with_llm": false,
+  "check_llm_quality": false
+}
+```
+
+Core pipeline with LLM enrichment:
+
+```json
+{
+  "with_llm": true,
+  "check_llm_quality": false
+}
+```
+
+Core pipeline with LLM enrichment and quality check:
+
+```json
+{
+  "with_llm": true,
+  "check_llm_quality": true
+}
+```
+
+Invalid request:
+
+```json
+{
+  "with_llm": false,
+  "check_llm_quality": true
+}
+```
+
+`check_llm_quality` requires `with_llm` to be `true`.
 
 ### Invalid Usage
 
@@ -565,13 +605,14 @@ Completed:
 - Guardrail preventing LLM quality check without LLM summary generation
 - Pipeline status API endpoint
 - Core pipeline run API endpoint
+- Pipeline run request model
+- API-controlled pipeline execution modes
 
 
 ## Next Development Steps
 
 Planned next steps:
 
-- Add request options to the pipeline run API endpoint
 - Add optional LLM execution through the API
 - Add optional LLM quality check execution through the API
 - Refactor pipeline execution into a shared service layer
